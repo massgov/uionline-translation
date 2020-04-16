@@ -1,0 +1,45 @@
+{
+  "name": "uionline-translation",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "extract": "node extract-dictionaries.js",
+    "build": "browserify ./language-translation.js -o ./dist/language-translation.dist.js -g uglifyify -t [ babelify --presets [ @babel/preset-env ] --plugins [ ] ] && node get-dictionaries.js && minify-json ./dist/dictionaries"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/massgov/uionline-translation.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/massgov/uionline-translation/issues"
+  },
+  "homepage": "https://github.com/massgov/uionline-translation#readme",
+  "dependencies": {
+    "@babel/polyfill": "^7.8.7",
+    "@google-cloud/translate": "^5.3.0",
+    "node-html-parser": "^1.2.15"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.0",
+    "@babel/plugin-transform-runtime": "^7.9.0",
+    "@babel/preset-env": "^7.9.5",
+    "@babel/preset-es2015": "^7.0.0-beta.53",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^8.1.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "babelify": "^10.0.0",
+    "browserify": "^16.5.1",
+    "minify-json": "^1.0.0",
+    "node-fetch": "^2.6.0",
+    "uglifyify": "^5.0.2"
+  }
+}
