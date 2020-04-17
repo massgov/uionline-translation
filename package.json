@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "extract": "node extract-dictionaries.js",
-    "build": "browserify ./language-translation.js -o ./dist/language-translation.dist.js -g uglifyify -t [ babelify --presets [ @babel/preset-env ] --plugins [ ] ] && node get-dictionaries.js && minify-json ./dist/dictionaries"
+    "build": "browserify ./src/index.js -o ./dist/language-translation.dist.js -g uglifyify -t [ babelify --presets [ @babel/preset-env ] --plugins [ ] ] && node get-dictionaries.js && minify-json ./dist/dictionaries"
   },
   "repository": {
     "type": "git",
@@ -21,6 +21,7 @@
     "@babel/polyfill": "^7.8.7",
     "@google-cloud/translate": "^5.3.0",
     "dotenv": "^8.2.0",
+    "jest": "^25.3.0",
     "node-html-parser": "^1.2.15"
   },
   "devDependencies": {
