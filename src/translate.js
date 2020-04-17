@@ -13,7 +13,7 @@ module.exports = class Translator {
         const original = str.trim();
         if(original.length) {
             if(this.database.has(original)) {
-                this.seenTargets.set(this.database.get(source), '');
+                this.seenTargets.set(this.database.get(original), '');
                 return str.replace(original, this.database.get(original));
             }
             const [source, placeholders] = this.placeholderize(original);
