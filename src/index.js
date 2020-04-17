@@ -4,6 +4,8 @@
  */
 const dictionaryDirectory = 'https://cdn.jsdelivr.net/gh/massgov/uionline-translation@latest/dist/dictionaries/';
 
+const Translator = require('./translate');
+
 /**
  * These will match the dictionaries avilable to translate from
  */
