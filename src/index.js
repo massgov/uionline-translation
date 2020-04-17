@@ -2,7 +2,9 @@
  * Public URL directory that includes translations to be used.
  * Temp use of gist while repo is private.
  */
-const dictionaryDirectory = 'https://cdn.jsdelivr.net/gh/massgov/uionline-translation@latest/dist/dictionaries/';
+const translationBaseURL = window.uiOnlineTranslationURL || 'https://cdn.jsdelivr.net/gh/massgov/uionline-translation@latest';
+
+const Translator = require('./translate');
 
 /**
  * These will match the dictionaries avilable to translate from
@@ -20,10 +22,6 @@ const availableLanguages = new Map([
  * Defaults to English, but will be set based on URL param or cookie
  */
 let currentLangValue = 'en';
-
-let languageFileLoaded = false;
-
-let strings = new Map();
 
 /**
  * UI-Online is already using jQuery
@@ -251,18 +249,6 @@ function handleButtons(lang) {
     }
 }
 
-async function loadLanguageFile(lang) {
-    if (!languageFileLoaded) {
-        console.log("Language file not loaded, loading...");
-        await jQuery.getJSON(`${dictionaryDirectory}${lang}.json`, (languageData) => {
-            strings = new Map(languageData);
-            languageFileLoaded = true;
-        });
-    }
-
-    return true;
-}
-
 /**
  * Some standard cookie functions to add/modify/delete the chosen language
  */
@@ -296,41 +282,27 @@ function eraseCookie(name) {
     createCookie(name, "", -1);
 }
 
-// Initialize two maps to track what we were and were not able to translate on this page.
-const untranslated = new Map();
-const translated = new Map();
-
-/**
- * Given a string, strip off whitespace and try to translate.
- */
-function translateText(text) {
-    const extracted = text.trim();
-    if (extracted.length) {
-        if (strings.has(extracted)) {
-            translated.set(strings.get(extracted), true);
-            return text.replace(extracted, strings.get(extracted));
-        }
-        if (!translated.has(extracted)) {
-            untranslated.set(extracted, '');
-        }
-    }
+function getTranslator(lang, onTranslationMiss) {
+    return jQuery.getJSON(`${translationBaseURL}/dist/dictionaries/${lang}.json`).then((dictionary) => {
+       return new Translator(dictionary, onTranslationMiss);
+    });
 }
 
-/**
- * Given an HTML element, extract the text within it and attempt to translate.
- */
-function translateElement(el) {
-    if (el.nodeType === Node.TEXT_NODE) {
-        const translation = translateText(el.textContent);
-        if (translation) {
-            el.textContent = translation.replace(/\u00a0/g, " ");
-        }
-    }
-    el.childNodes.forEach(translateElement);
-}
 
 function translatePage(lang) {
-    loadLanguageFile(lang).then(() => {
+    const untranslated = new Map();
+    const onTranslationMiss = (str) => untranslated.set(str, '');
+
+    getTranslator(lang, onTranslationMiss).then(translator => {
+        function translateElement(el) {
+            if (el.nodeType === Node.TEXT_NODE) {
+                const translation = translator.translate(el.textContent);
+                if (translation) {
+                    el.textContent = translation.replace(/\u00a0/g, " ");
+                }
+            }
+            el.childNodes.forEach(translateElement);
+        }
 
         // Translate strings contained in specific HTML selectors.
         document.querySelectorAll('p').forEach(translateElement);
@@ -341,5 +313,5 @@ function translatePage(lang) {
 
         // Spit out the list of strings we weren't able to translate.
         console.log(JSON.stringify(Array.from(untranslated)));
-    });
+    })
 }
