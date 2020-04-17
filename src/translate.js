@@ -7,6 +7,7 @@ module.exports = class Translator {
     constructor(database, onUntranslated) {
         this.database = new Map(database);
         this.onUntranslated = onUntranslated || (() => {});
+        this.seenTargets = new Map();
     }
     translate(str) {
         const original = str.trim();
@@ -16,9 +17,11 @@ module.exports = class Translator {
             }
             const [source, placeholders] = this.placeholderize(original);
             if(this.database.has(source)) {
+                this.seenTargets.set(this.database.get(source));
                 return str.replace(original, this.deplaceholderize(this.database.get(source), placeholders))
             }
-            else {
+            // If this string is already translated, skip logging it as an untranslated string.
+            else if(!this.seenTargets.has(source)) {
                 this.onUntranslated(source);
             }
         }

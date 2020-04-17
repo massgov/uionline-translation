@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "extract": "node extract-dictionaries.js",
-    "build": "browserify ./src/index.js -o ./dist/language-translation.dist.js -g uglifyify -t [ babelify --presets [ @babel/preset-env ] --plugins [ ] ] && node get-dictionaries.js && minify-json ./dist/dictionaries"
+    "browserify": "browserify ./src/index.js -o ./dist/language-translation.dist.js -g uglifyify -t [ babelify --presets [ @babel/preset-env ] --plugins [ ] ]",
+    "get-translations": "node get-dictionaries.js && minify-json ./dist/dictionaries",
+    "build": "npm run browserify && npm run get-translations",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
