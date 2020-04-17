@@ -11,6 +11,9 @@ module.exports = class Translator {
     translate(str) {
         const original = str.trim();
         if(original.length) {
+            if(this.database.has(original)) {
+                return str.replace(original, this.database.get(original));
+            }
             const [source, placeholders] = this.placeholderize(original);
             if(this.database.has(source)) {
                 return str.replace(original, this.deplaceholderize(this.database.get(source), placeholders))
