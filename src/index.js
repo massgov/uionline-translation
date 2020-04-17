@@ -2,7 +2,7 @@
  * Public URL directory that includes translations to be used.
  * Temp use of gist while repo is private.
  */
-const dictionaryDirectory = 'https://cdn.jsdelivr.net/gh/massgov/uionline-translation@latest/dist/dictionaries/';
+const translationBaseURL = window.uiOnlineTranslationURL || 'https://cdn.jsdelivr.net/gh/massgov/uionline-translation@latest';
 
 const Translator = require('./translate');
 
@@ -283,7 +283,7 @@ function eraseCookie(name) {
 }
 
 function getTranslator(lang, onTranslationMiss) {
-    return jQuery.getJSON(`${dictionaryDirectory}${lang}.json`).then((dictionary) => {
+    return jQuery.getJSON(`${translationBaseURL}/dist/dictionaries/${lang}.json`).then((dictionary) => {
        return new Translator(dictionary, onTranslationMiss);
     });
 }
